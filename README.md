@@ -1,5 +1,3 @@
 # World Flag Arcade MacOS 
 
-<img src=https://raw.githubusercontent.com/FrankKair/world-flag-arcade-mac/master/assets/screenshot.png width=80% height=80%/>
-
-
+<img src=https://github.com/FrankKair/world-flag-arcade-mac/blob/master/assets/screenshot.png width=60% height=60%/>
