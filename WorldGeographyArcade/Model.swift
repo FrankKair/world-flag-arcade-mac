@@ -1,22 +1,12 @@
-//
-//  Model.swift
-//  WorldGeographyArcade
-//
-//  Created by Frank Magagnin Kair on 01/04/19.
-//  Copyright © 2019 Frank Magagnin Kair. All rights reserved.
-//
-
 import Foundation
 import Cocoa
 
-struct Country {
+struct Country: Hashable {
     let name: String
     let capital: String
     let code: String
     let flag: NSImage
 }
-
-extension Country: Hashable {}
 
 struct Round {
     let options: [Country]
@@ -30,20 +20,19 @@ class Game {
     private var score = 0
 
     func getCountries() -> Round {
-        var arr = [Country]()
+        var options = Set<Country>()
 
         for _ in (0...3) {
             var country = countries.get()
-            while seen.contains(country) || arr.contains(country) {
+            while seen.contains(country) || options.contains(country) {
                 country = countries.get()
             }
-            arr.append(country)
+            options.insert(country)
         }
 
-        let randomIndex = Int.random(in: 0..<arr.count)
-        let answer = arr[randomIndex]
+        let answer = options.randomElement()!
         seen.insert(answer)
-        return Round(options: arr, answer: answer)
+        return Round(options: Array(options), answer: answer)
     }
 
     func getScore() -> Int {
@@ -56,21 +45,20 @@ class Game {
 
     func resetGame() {
         score = 0
-        seen.removeAll()
+        seen.removeAll(keepingCapacity: true)
     }
 }
 
 struct Countries {
-    private let data: [Country]
+    private let data: Set<Country>
     var count: Int { return data.count }
 
     func get() -> Country {
-        let random = Int.random(in: 1..<data.count)
-        return data[random]
+        return data.randomElement()!
     }
 
     init() {
-        data = [
+        data = Set([
             Country(name: "Andorra", capital: "Andorra la Vella", code: "ad", flag: NSImage(named: "ad")!),
             Country(name: "United Arab Emirates", capital: "Abu Dhabi", code: "ae", flag: NSImage(named: "ae")!),
             Country(name: "Afghanistan", capital: "Kabul", code: "af", flag: NSImage(named: "af")!),
@@ -318,6 +306,6 @@ struct Countries {
             Country(name: "South Africa", capital: "Pretoria", code: "za", flag: NSImage(named: "za")!),
             Country(name: "Zambia", capital: "Lusaka", code: "zm", flag: NSImage(named: "zm")!),
             Country(name: "Zimbabwe", capital: "Harare", code: "zw", flag: NSImage(named: "zw")!)
-        ]
+        ])
     }
 }
